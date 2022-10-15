@@ -26,7 +26,7 @@ The html table **output** second argument
 
 ![synthesis table_html](doc/images/example_csv_file_to_html.png)
 
-## Usage
+## Usage maven
 
 The maven groupId, artifactId and version, this plugin is in the **Maven Central Repository**
 
@@ -89,6 +89,17 @@ Just include the plugin in your `pom.xml` and execute `mvn verify`.
     </build>
 </project>
 ```
+
+## Simple jar tool
+This tool is a java jar, so it's could be use as simple jar (look at [Release](https://github.com/vdaburon/JMReportCsvToHtml/releases) to download jar file)
+
+Need also commons-csv.jar librarie
+
+https://commons.apache.org/proper/commons-csv/download_csv.cgi
+<pre>
+java -cp csv-report-to-html-&lt;version&gt;.jar;commons-csv-&lt;version&gt;.jar io.github.vdaburon.jmeter.utils.ReportCsv2Html AggregateReport.csv AggregateReport.html
+</pre>
+
 ## Link to others projects
 Usally this plugin is use with [jmeter-graph-tool-maven-plugin](https://github.com/vdaburon/jmeter-graph-tool-maven-plugin)
 
