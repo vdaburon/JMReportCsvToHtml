@@ -9,7 +9,9 @@ Odd lines are gray, even lines are white
 
 The input csv file comes from a "Save Table Data"" of a **JMeter Report** (Synthesis Report, Aggregate Report, Summary Report) or from jmeter-graph-tool-maven-plugin
 
-It is preferable to sort the lines (except the header) before generating the table.
+If you want to sort the array then add a third argument : sort 
+
+The array will be sorted except the first line (headers) and the last line (footer TOTAL). The sorting is done on the Label (First column).
 
 The generated HTML table can be directly included in an HTML page with the GenereHtmlForDirectory tool.
 
@@ -33,7 +35,7 @@ The maven groupId, artifactId and version, this plugin is in the **Maven Central
 ```xml
 <groupId>io.github.vdaburon</groupId>
 <artifactId>csv-report-to-html</artifactId>
-<version>1.0</version>
+<version>1.1</version>
 ```
 Just include the plugin in your `pom.xml` and execute `mvn verify`.
 
@@ -44,7 +46,7 @@ Just include the plugin in your `pom.xml` and execute `mvn verify`.
         <dependency>
             <groupId>io.github.vdaburon</groupId>
             <artifactId>csv-report-to-html</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
         </dependency>
     </dependencies>
     
@@ -66,6 +68,7 @@ Just include the plugin in your `pom.xml` and execute `mvn verify`.
                             <arguments>
                                 <argument>${project.build.directory}/jmeter/results/AggregateReport.csv</argument>
                                 <argument>${project.build.directory}/jmeter/results/AggregateReport.html</argument>
+                                <argument>sort</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -80,6 +83,7 @@ Just include the plugin in your `pom.xml` and execute `mvn verify`.
                             <arguments>
                                 <argument>${project.build.directory}/jmeter/results/SynthesisReport.csv</argument>
                                 <argument>${project.build.directory}/jmeter/results/SynthesisReport.html</argument>
+                                <argument>sort</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -96,8 +100,10 @@ This tool is a java jar, so it's could be use as simple jar (look at [Release](h
 Need also commons-csv.jar librarie
 
 https://commons.apache.org/proper/commons-csv/download_csv.cgi
+
+The third parameter "sort" is optional. The sorting is done on the Label (First column)
 <pre>
-java -cp csv-report-to-html-&lt;version&gt;.jar;commons-csv-&lt;version&gt;.jar io.github.vdaburon.jmeter.utils.ReportCsv2Html AggregateReport.csv AggregateReport.html
+java -cp csv-report-to-html-&lt;version&gt;.jar;commons-csv-&lt;version&gt;.jar io.github.vdaburon.jmeter.utils.ReportCsv2Html AggregateReport.csv AggregateReport.html sort
 </pre>
 
 ## Link to others projects

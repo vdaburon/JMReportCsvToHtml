@@ -6,6 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -18,34 +22,67 @@ import org.apache.commons.csv.CSVRecord;
 
 public class ReportCsv2Html {
 	public static void main(String[] args) {
-		int statusReturn = 1; // KO
-
-		if (args.length != 2) { 
+		boolean bSort = false;
+		if (args.length != 2 && args.length != 3) {
 			usage();
-			System.exit(statusReturn);
+			System.exit(1);
 		}
 		String fileIn = args[0];
 		String fileOut = args[1];
-		
+		if (args.length == 3) {
+			if ("sort".equalsIgnoreCase(args[2])) {
+				bSort = true;
+			}
+		}
 		try {
-			creatHtmlFromCsv(fileIn, fileOut);
-			statusReturn = 0; // OK
+			creatHtmlFromCsv(fileIn, fileOut, bSort);
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		System.exit(statusReturn);
 	}
 	
 	private static void usage() {
-		System.err.println("java -jar ReportCsv2Html.jar fileCsvIn fileHtmlOut");
+		System.err.println("java -jar csv-report-to-html-<version>.jar fileCsvIn fileHtmlOut [sort]");
 	}
 	
-	private static void creatHtmlFromCsv(String fileIn, String fileout) throws IOException {
+	private static void creatHtmlFromCsv(String fileIn, String fileout, boolean bSort) throws IOException {
 		Reader in = new FileReader(fileIn);
 		Iterable<CSVRecord> records = CSVFormat.RFC4180.parse(in);
 
 		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fileout)));
+
+		// read all
+		Iterator<CSVRecord> iterator = records.iterator();
+
+		List<CSVRecord> listRecordsBetweenFirstAndLast = new ArrayList();
+		CSVRecord firstRecord = null;
+		CSVRecord lastRecord = null;
+
+		int i = 0;
+		while(iterator.hasNext()) {
+			i++;
+			CSVRecord record = iterator.next();
+			if (i == 1) {
+				// save the Header line
+				firstRecord = record;
+			}
+			else {
+				listRecordsBetweenFirstAndLast.add(record);
+				lastRecord = record;
+			}
+		}
+		if (listRecordsBetweenFirstAndLast.size() >= 1) {
+			// remove the footer line (Total)
+			listRecordsBetweenFirstAndLast.remove(listRecordsBetweenFirstAndLast.size() -1);
+		}
+		if (bSort) {
+			// and sort records (expect first line and last line)
+			Collections.sort(listRecordsBetweenFirstAndLast, new CompareRecord());
+		}
+
+		in.close();
+
 		out.println("<div>");
 		out.println("<style>");
 		out.println("table.table_jp {border-collapse: collapse;}");
@@ -60,33 +97,34 @@ public class ReportCsv2Html {
 		out.println("table.table_jp th:nth-child(-n+1) { text-align: left; }");
 		out.println("</style>");
 		out.println("<table class=\"table_jp\">");
-		
-		int i = 0;
-		for (CSVRecord record : records) {
-			i++;
-			int nbColums = record.size();
-			if (i == 1) {
-				// headers
-				out.println("<tr>");
-				for (int j = 0; j < nbColums; j++) {
-			        out.println("<th>" + textToHtml(record.get(j)) + "</th>");
-				}
-				out.println("</tr>");
-			}
-			else {
-				out.println("<tr>");
-				for (int j = 0; j < nbColums; j++) {
-			        out.println("<td>" + textToHtml(record.get(j)) + "</td>");
-				}
-				out.println("</tr>");
-			}
+
+		// the header
+		int nbFirstColums = firstRecord.size();
+		out.println("<tr>");
+		for (int j = 0; j < nbFirstColums; j++) {
+			out.println("<th>" + textToHtml(firstRecord.get(j)) + "</th>");
 		}
-		      
+		out.println("</tr>");
+
+		for (CSVRecord record : listRecordsBetweenFirstAndLast) {
+			int nbColums = record.size();
+			out.println("<tr>");
+			for (int j = 0; j < nbColums; j++) {
+				out.println("<td>" + textToHtml(record.get(j)) + "</td>");
+			}
+			out.println("</tr>");
+		}
+
+		// the footer
+		int nbLastColums = lastRecord.size();
+		out.println("<tr>");
+		for (int j = 0; j < nbLastColums; j++) {
+			out.println("<td>" + textToHtml(lastRecord.get(j)) + "</td>");
+		}
+		out.println("</tr>");
 		out.println("</table>");
 		out.println("</div>");
 		out.close();
-		
-		in.close();
 	}
 
 	/** Converts a character string into strings readable by a web browser

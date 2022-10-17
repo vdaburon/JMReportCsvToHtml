@@ -6,7 +6,7 @@
 
     <groupId>io.github.vdaburon</groupId>
     <artifactId>csv-report-to-html</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
     <name>Reads a csv file and generates an html div block as an html table</name>
     <description>Reads a csv file and generates an html div block as an html table with an embedded stylesheet</description>
