@@ -1,4 +1,4 @@
-# Generating an HTML table from a csv file
+# Generating an HTML table from a csv file JMeter Report
 This program reads a csv file and generates an html table div block (not a complet html page)
 
 Reads a csv file and generates an html div block as an html table with an embedded stylesheet.
@@ -7,13 +7,13 @@ The first column is left-aligned, the other columns right-aligned
 
 Odd lines are gray, even lines are white
 
-The input csv file comes from a "Save Table Data"" of a **JMeter Report** (Synthesis Report, Aggregate Report, Summary Report) or from jmeter-graph-tool-maven-plugin
+The **input csv** file comes from a "Save Table Data"" of a **JMeter Report** (Synthesis Report, Aggregate Report, Summary Report) or from `jmeter-graph-tool-maven-plugin`
 
-If you want to sort the array then add a third argument : sort 
+If you want to sort the array then add a third argument : `sort` 
 
 The array will be sorted except the first line (headers) and the last line (footer TOTAL). The sorting is done on the Label (First column).
 
-The generated HTML table can be directly included in an HTML page with the GenereHtmlForDirectory tool.
+The generated HTML table can be directly included in an HTML page with the **GenereHtmlForDirectory** tool.
 
 ## License
 See the LICENSE file Apache 2 [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
@@ -25,17 +25,16 @@ The synthesis csv file **input** first argument
 ![synthesis csv file](doc/images/example_csv_file.png)
 
 The html table **output** second argument
-
 ![synthesis table_html](doc/images/example_csv_file_to_html.png)
 
 ## Usage maven
 
-The maven groupId, artifactId and version, this plugin is in the **Maven Central Repository**
+The maven groupId, artifactId and version, this plugin is in the **Maven Central Repository** [![Maven Central csv-report-to-html](https://maven-badges.herokuapp.com/maven-central/io.github.vdaburon/csv-report-to-html/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.vdaburon/csv-report-to-html)
 
 ```xml
 <groupId>io.github.vdaburon</groupId>
 <artifactId>csv-report-to-html</artifactId>
-<version>1.1</version>
+<version>1.2</version>
 ```
 Just include the plugin in your `pom.xml` and execute `mvn verify`.
 
@@ -46,7 +45,7 @@ Just include the plugin in your `pom.xml` and execute `mvn verify`.
         <dependency>
             <groupId>io.github.vdaburon</groupId>
             <artifactId>csv-report-to-html</artifactId>
-            <version>1.1</version>
+            <version>1.2</version>
         </dependency>
     </dependencies>
     
@@ -97,13 +96,14 @@ Just include the plugin in your `pom.xml` and execute `mvn verify`.
 ## Simple jar tool
 This tool is a java jar, so it's could be use as simple jar (look at [Release](https://github.com/vdaburon/JMReportCsvToHtml/releases) to download jar file)
 
-Need also commons-csv.jar librarie
-
+If you don't use the Uber jar csv-report-to-html-&lt;version&gt;-jar-with-dependencies.jar, you need also commons-csv.jar librarie<br>
 https://commons.apache.org/proper/commons-csv/download_csv.cgi
 
-The third parameter "sort" is optional. The sorting is done on the Label (First column)
+The third parameter `sort` is optional. The sorting is done on the Label (First column)
 <pre>
 java -cp csv-report-to-html-&lt;version&gt;.jar;commons-csv-&lt;version&gt;.jar io.github.vdaburon.jmeter.utils.ReportCsv2Html AggregateReport.csv AggregateReport.html sort
+or
+java -jar csv-report-to-html-&lt;version&gt;-jar-with-dependencies.jar AggregateReport.csv AggregateReport.html sort
 </pre>
 
 ## Link to others projects
@@ -111,5 +111,13 @@ Usally this plugin is use with [jmeter-graph-tool-maven-plugin](https://github.c
 
 The **jmeter-graph-tool-maven-plugin** create the report csv file and **this plugin** create the **html table report** from the csv file.
 
-And an html page to display all graphs and html report tables could be generated whith [create-html-for-files-in-directory](https://github.com/vdaburon/CreateHtmlForFilesInDirectory)
+And a html page to display all graphs and html report tables could be generated whith [create-html-for-files-in-directory](https://github.com/vdaburon/CreateHtmlForFilesInDirectory)
 
+Another tool [create-gitlab-wiki-page-for-files-in-directory](https://github.com/vdaburon/CreateGitlabWikiPageForFilesInDirectory) could create a Gitlab Wiki Page to display JMeter files results.
+
+## Versions
+Version 1.2 Add an Uber jar with dependencies in the pom.xml
+
+Version 1.1 Add the sort option for lines between first and last lines. Remove the System.exit() because the maven plugin exec-maven-plugin will stop if present.
+
+Version 1.0 Initial version
